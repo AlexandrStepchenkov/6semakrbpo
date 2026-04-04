@@ -1,7 +1,5 @@
 package com.example.carsharing.config;
 
-import com.example.carsharing.service.UserDetailsServiceImpl;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -18,6 +16,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.example.carsharing.service.UserDetailsServiceImpl;
+
+import lombok.RequiredArgsConstructor;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -32,34 +34,40 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // Аутентификация открыта для всех
                         .requestMatchers("/api/auth/**").permitAll()
 
-                        // просмотр доступен всем авторизованным, управление - только адм
                         .requestMatchers(HttpMethod.GET, "/api/cars/**").authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/cars").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/cars/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/cars/**").hasRole("ADMIN")
 
-                        // только адм (CRUD операции)
                         .requestMatchers(HttpMethod.GET, "/api/users/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/users").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/users/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/users/**").hasRole("ADMIN")
 
-                        // создание и просмотр для авторизованных пользователей
                         .requestMatchers(HttpMethod.GET, "/api/rides/**").authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/rides").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/api/rides/**").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/rides/**").hasRole("ADMIN")
 
-                        // только адм для просмотра, создание через систему
                         .requestMatchers(HttpMethod.GET, "/api/payments/**").hasRole("ADMIN")
 
-                        // просмотр и управление для адм
                         .requestMatchers(HttpMethod.GET, "/api/sessions/**").hasRole("ADMIN")
 
-                        // Остальное запрещено по умолчанию
+                        .requestMatchers(HttpMethod.POST, "/api/licenses").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/licenses/**").authenticated()
+
+                        .requestMatchers(HttpMethod.POST, "/api/products").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/products/**").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/products/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/products/**").hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.POST, "/api/license-types").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/license-types/**").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/license-types/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/license-types/**").hasRole("ADMIN")
+
                         .anyRequest().denyAll()
                 )
                 .authenticationProvider(authenticationProvider())
@@ -70,8 +78,7 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService);
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(userDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }

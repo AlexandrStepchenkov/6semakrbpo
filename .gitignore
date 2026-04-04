@@ -41,3 +41,5 @@ certs/
 # env
 .env
 *.env
+
+postman_carsharing_license_api.json

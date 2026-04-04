@@ -1,19 +1,21 @@
 package com.example.carsharing.service;
 
+import java.time.Duration;
+import java.time.Instant;
+import java.util.NoSuchElementException;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
 import com.example.carsharing.config.JwtTokenUtils;
 import com.example.carsharing.model.AppUser;
 import com.example.carsharing.model.SessionStatus;
 import com.example.carsharing.model.UserSession;
 import com.example.carsharing.repository.AppUserRepository;
 import com.example.carsharing.repository.UserSessionRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.util.NoSuchElementException;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -50,7 +52,7 @@ public class AuthService {
                 .orElseThrow(() -> new NoSuchElementException("Session not found"));
 
         if (session.getStatus() != SessionStatus.ACTIVE || session.getExpiresAt().isBefore(Instant.now())) {
-            session.setStatus(SessionStatus.REVOKED); // Или EXPIRED
+            session.setStatus(SessionStatus.REVOKED);
             sessionRepo.save(session);
             throw new SecurityException("Token invalid");
         }

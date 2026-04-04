@@ -14,7 +14,6 @@ public class DB {
     @PersistenceContext
     private EntityManager em;
 
-    // USER
     public User saveUser(int id, String name, String email, String phone) {
         User u = em.find(User.class, id);
         if (u == null) u = new User(id, name, email, phone);
@@ -32,7 +31,6 @@ public class DB {
         if (u != null) em.remove(u);
     }
 
-    // CAR
     public Car saveCar(int id, String model, String plate, double price) {
         Car c = em.find(Car.class, id);
         if (c == null) c = new Car(id, model, plate, price, true);
@@ -49,7 +47,6 @@ public class DB {
                 .setParameter("id", id).executeUpdate();
     }
 
-    // RIDE
     public Ride addRide(int userId, int carId, double dist, double hours) {
         Car car = em.find(Car.class, carId);
         if (car == null || !car.isAvailable()) return null;
@@ -88,7 +85,6 @@ public class DB {
         return p;
     }
 
-    // Бизнес-операции
     public List<Car> availableCars() {
         return em.createQuery("from Car c where c.available = true", Car.class).getResultList();
     }
