@@ -1,0 +1,33 @@
+package com.example.rbpo2.license.model;
+
+import java.util.UUID;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
+import lombok.Data;
+
+@Data
+@Entity
+@Table(name = "product")
+public class LicenseProduct {
+
+    @Id
+    private UUID id;
+
+    @Column(name = "name", nullable = false)
+    private String name;
+
+    @Column(name = "is_blocked", nullable = false)
+    private boolean isBlocked;
+
+    @PrePersist
+    @SuppressWarnings("unused")
+    private void ensureId() {
+        if (id == null) {
+            id = UUID.randomUUID();
+        }
+    }
+}

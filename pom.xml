@@ -5,13 +5,13 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.7</version>
+        <version>3.5.13</version>
         <relativePath/>
     </parent>
     <groupId>com.example</groupId>
-    <artifactId>carsharing</artifactId>
+    <artifactId>rbpo2</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>carsharing</name>
+    <name>rbpo2</name>
     <description>Demo project for Spring Boot</description>
 
     <properties>
@@ -34,6 +34,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
         </dependency>
 
         <dependency>
@@ -88,45 +94,32 @@
                             <artifactId>lombok</artifactId>
                             <version>1.18.42</version>
                         </path>
+                        <path>
+                            <groupId>org.springframework.boot</groupId>
+                            <artifactId>spring-boot-configuration-processor</artifactId>
+                        </path>
                     </annotationProcessorPaths>
                 </configuration>
             </plugin>
 
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-compiler-plugin</artifactId>
-                        <version>3.11.0</version>
-                        <configuration>
-                            <source>${java.version}</source>
-                            <target>${java.version}</target>
-                            <annotationProcessorPaths>
-                                <path>
-                                    <groupId>org.projectlombok</groupId>
-                                    <artifactId>lombok</artifactId>
-                                    <version>1.18.42</version>
-                                </path>
-                            </annotationProcessorPaths>
-                        </configuration>
-                    </plugin>
-
-                    <plugin>
-                        <groupId>org.springframework.boot</groupId>
-                        <artifactId>spring-boot-maven-plugin</artifactId>
-                        <configuration>
-                            <excludes>
-                                <exclude>
-                                    <groupId>org.projectlombok</groupId>
-                                    <artifactId>lombok</artifactId>
-                                </exclude>
-                            </excludes>
-                            <jvmArguments>--enable-preview</jvmArguments>
-                            <environmentVariables>
-                                <DB_PASSWORD>${env.DB_PASSWORD}</DB_PASSWORD>
-                                <JWT_SECRET>${env.JWT_SECRET}</JWT_SECRET>
-                                <KEYSTORE_PASSWORD>${env.KEYSTORE_PASSWORD}</KEYSTORE_PASSWORD>
-                            </environmentVariables>
-                        </configuration>
-                    </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </exclude>
+                    </excludes>
+                    <jvmArguments>--enable-preview</jvmArguments>
+                    <environmentVariables>
+                        <DB_PASSWORD>${env.DB_PASSWORD}</DB_PASSWORD>
+                        <JWT_SECRET>${env.JWT_SECRET}</JWT_SECRET>
+                        <KEYSTORE_PASSWORD>${env.KEYSTORE_PASSWORD}</KEYSTORE_PASSWORD>
+                    </environmentVariables>
+                </configuration>
+            </plugin>
 
         </plugins>
     </build>
