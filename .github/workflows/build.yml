@@ -8,13 +8,28 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: carsharing_db
+          POSTGRES_USER: spring_service
+          POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U spring_service -d rbpo2_db"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - uses: actions/checkout@v4
 
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
-          java-version: '25'
+          java-version: '17'
           distribution: 'temurin'
           cache: 'maven'
 
@@ -26,9 +41,14 @@ jobs:
       - name: Build with Maven
         run: ./mvnw clean verify
         env:
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_NAME: carsharing_db
+          DB_USER: spring_service
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          LICENSE_PUBLIC_CERT_BASE64: ${{ vars.LICENSE_PUBLIC_CERT_BASE64 }}
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4

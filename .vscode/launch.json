@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-Rbpo2Application<carsharing>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.example.rbpo2.Rbpo2Application",
+            "projectName": "carsharing",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
