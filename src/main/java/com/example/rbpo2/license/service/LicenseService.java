@@ -33,8 +33,6 @@ import com.example.rbpo2.model.AppUser;
 @Service
 public class LicenseService {
 
-    private static final int MAX_DEVICE_ACTIVATIONS = 4;
-
     private final LicenseProductService licenseProductService;
     private final LicenseTypeService licenseTypeService;
     private final LicenseApplicationUserService licenseApplicationUserService;
@@ -305,7 +303,7 @@ public class LicenseService {
         license.setFirstActivationDate(null);
         license.setEndingDate(null);
         license.setBlocked(false);
-        license.setDeviceCount(MAX_DEVICE_ACTIVATIONS);
+        license.setDeviceCount(request.getDeviceCount() != null ? request.getDeviceCount() : 0);
         license.setDescription(request.getDescription());
         return license;
     }
