@@ -40,8 +40,9 @@ jobs:
 
       - name: Decode signing keystore
         run: |
-          mkdir -p src/main/resources
+          mkdir -p src/main/resources certs
           echo "${{ secrets.SIGNING_KEYSTORE_BASE64 }}" | base64 --decode > src/main/resources/signing-keystore.p12
+          echo "${{ secrets.SIGNING_KEYSTORE_BASE64 }}" | base64 --decode > certs/signing-keystore.p12
 
       - name: Run tests
         run: ./mvnw clean test
@@ -78,8 +79,9 @@ jobs:
 
       - name: Decode signing keystore
         run: |
-          mkdir -p src/main/resources
+          mkdir -p src/main/resources certs
           echo "${{ secrets.SIGNING_KEYSTORE_BASE64 }}" | base64 --decode > src/main/resources/signing-keystore.p12
+          echo "${{ secrets.SIGNING_KEYSTORE_BASE64 }}" | base64 --decode > certs/signing-keystore.p12
 
       - name: Build application
         run: ./mvnw clean package -DskipTests
