@@ -15,8 +15,6 @@ import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.Base64;
 
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Service;
 
 import com.example.rbpo2.license.signature.api.KeyProviderApi;
@@ -144,19 +142,37 @@ public class KeystoreKeyProvider implements KeyProviderApi {
                 .replaceAll("\\s", "");
     }
 
-    private InputStream openKeyStoreStream(String path) throws IOException {
-        if (path.startsWith("classpath:")) {
-            return new ClassPathResource(path.substring("classpath:".length())).getInputStream();
+private InputStream openKeyStoreStream(String path) throws IOException {
+
+    if (path.startsWith("classpath:")) {
+        String resourcePath = path.substring("classpath:".length());
+        InputStream is = Thread.currentThread()
+                .getContextClassLoader()
+                .getResourceAsStream(resourcePath);
+
+        if (is == null) {
+            throw new IOException("Classpath resource not found: " + resourcePath);
         }
-        if (path.startsWith("file:")) {
-            return Files.newInputStream(Path.of(path.substring("file:".length())));
-        }
-        return new FileSystemResource(path).getInputStream();
+
+        return is;
     }
+
+    if (path.startsWith("file:")) {
+        return Files.newInputStream(Path.of(path.substring("file:".length())));
+    }
+
+    InputStream is = Thread.currentThread()
+            .getContextClassLoader()
+            .getResourceAsStream(path);
+
+    if (is != null) return is;
+
+    return Files.newInputStream(Path.of(path));
+}
 
     private String resolveKeyStorePath() {
         if (properties.getKeyStorePath() == null || properties.getKeyStorePath().isBlank()) {
-            return "file:certs/keystore.p12";
+            return "classpath:signing-keystore.p12";
         }
         return properties.getKeyStorePath();
     }
