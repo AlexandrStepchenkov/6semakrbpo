@@ -38,11 +38,17 @@ jobs:
           mkdir -p src/main/resources
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > src/main/resources/keystore.p12
 
-      - name: Decode signing keystore
+      - name: Prepare signing keystore
         run: |
           mkdir -p src/main/resources certs
-          echo "${{ secrets.SIGNING_KEYSTORE_BASE64 }}" | base64 --decode > src/main/resources/signing-keystore.p12
-          echo "${{ secrets.SIGNING_KEYSTORE_BASE64 }}" | base64 --decode > certs/signing-keystore.p12
+          if [ -n "${{ secrets.SIGNING_KEYSTORE_BASE64 }}" ]; then
+            echo "${{ secrets.SIGNING_KEYSTORE_BASE64 }}" | base64 --decode > src/main/resources/signing-keystore.p12
+            echo "${{ secrets.SIGNING_KEYSTORE_BASE64 }}" | base64 --decode > certs/signing-keystore.p12
+          else
+            chmod +x certs/gen_signing_keystore.sh || true
+            ./certs/gen_signing_keystore.sh
+            cp certs/signing-keystore.p12 src/main/resources/signing-keystore.p12 || true
+          fi
 
       - name: Run tests
         run: ./mvnw clean test
@@ -77,11 +83,17 @@ jobs:
           mkdir -p src/main/resources
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > src/main/resources/keystore.p12
 
-      - name: Decode signing keystore
+      - name: Prepare signing keystore
         run: |
           mkdir -p src/main/resources certs
-          echo "${{ secrets.SIGNING_KEYSTORE_BASE64 }}" | base64 --decode > src/main/resources/signing-keystore.p12
-          echo "${{ secrets.SIGNING_KEYSTORE_BASE64 }}" | base64 --decode > certs/signing-keystore.p12
+          if [ -n "${{ secrets.SIGNING_KEYSTORE_BASE64 }}" ]; then
+            echo "${{ secrets.SIGNING_KEYSTORE_BASE64 }}" | base64 --decode > src/main/resources/signing-keystore.p12
+            echo "${{ secrets.SIGNING_KEYSTORE_BASE64 }}" | base64 --decode > certs/signing-keystore.p12
+          else
+            chmod +x certs/gen_signing_keystore.sh || true
+            ./certs/gen_signing_keystore.sh
+            cp certs/signing-keystore.p12 src/main/resources/signing-keystore.p12 || true
+          fi
 
       - name: Build application
         run: ./mvnw clean package -DskipTests
