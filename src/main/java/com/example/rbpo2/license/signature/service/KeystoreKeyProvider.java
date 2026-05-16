@@ -150,11 +150,16 @@ private InputStream openKeyStoreStream(String path) throws IOException {
                 .getContextClassLoader()
                 .getResourceAsStream(resourcePath);
 
-        if (is == null) {
-            throw new IOException("Classpath resource not found: " + resourcePath);
+        if (is != null) {
+            return is;
         }
 
-        return is;
+        Path fallbackPath = Path.of("certs", Path.of(resourcePath).getFileName().toString());
+        if (Files.exists(fallbackPath)) {
+            return Files.newInputStream(fallbackPath);
+        }
+
+        throw new IOException("Classpath resource not found: " + resourcePath);
     }
 
     if (path.startsWith("file:")) {

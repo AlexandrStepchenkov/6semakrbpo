@@ -45,9 +45,17 @@ jobs:
             echo "${{ secrets.SIGNING_KEYSTORE_BASE64 }}" | base64 --decode > src/main/resources/signing-keystore.p12
             echo "${{ secrets.SIGNING_KEYSTORE_BASE64 }}" | base64 --decode > certs/signing-keystore.p12
           else
-            chmod +x certs/gen_signing_keystore.sh || true
+            chmod +x certs/gen_signing_keystore.sh
             ./certs/gen_signing_keystore.sh
-            cp certs/signing-keystore.p12 src/main/resources/signing-keystore.p12 || true
+            if [ -f certs/signing-keystore.p12 ]; then
+              cp certs/signing-keystore.p12 src/main/resources/signing-keystore.p12
+            elif [ -f signing-keystore.p12 ]; then
+              cp signing-keystore.p12 certs/signing-keystore.p12
+              cp signing-keystore.p12 src/main/resources/signing-keystore.p12
+            else
+              echo "signing-keystore.p12 was not generated"
+              exit 1
+            fi
           fi
 
       - name: Run tests
@@ -90,9 +98,17 @@ jobs:
             echo "${{ secrets.SIGNING_KEYSTORE_BASE64 }}" | base64 --decode > src/main/resources/signing-keystore.p12
             echo "${{ secrets.SIGNING_KEYSTORE_BASE64 }}" | base64 --decode > certs/signing-keystore.p12
           else
-            chmod +x certs/gen_signing_keystore.sh || true
+            chmod +x certs/gen_signing_keystore.sh
             ./certs/gen_signing_keystore.sh
-            cp certs/signing-keystore.p12 src/main/resources/signing-keystore.p12 || true
+            if [ -f certs/signing-keystore.p12 ]; then
+              cp certs/signing-keystore.p12 src/main/resources/signing-keystore.p12
+            elif [ -f signing-keystore.p12 ]; then
+              cp signing-keystore.p12 certs/signing-keystore.p12
+              cp signing-keystore.p12 src/main/resources/signing-keystore.p12
+            else
+              echo "signing-keystore.p12 was not generated"
+              exit 1
+            fi
           fi
 
       - name: Build application
