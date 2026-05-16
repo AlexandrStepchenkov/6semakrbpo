@@ -7,7 +7,8 @@ PASSWORD="6semStepchenkovBKS2302"
 COUNTRY="RU"
 ORG="MTUCI"
 
-KEYSTORE_FILE="signing-keystore.p12"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+KEYSTORE_FILE="$SCRIPT_DIR/signing-keystore.p12"
 KEY_ALIAS="ticket_signing"
 
 rm -f "$KEYSTORE_FILE"
