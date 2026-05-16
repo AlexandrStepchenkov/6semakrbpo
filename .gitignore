@@ -32,7 +32,14 @@ build/
 
 ### keystore ###
 src/main/resources/keystore.p12
-certs/
+certs/*.p12
+certs/*.key
+certs/*.pem
+certs/*.csr
+certs/*.srl
+certs/interCA.srl
+certs/rootCA.srl
+!certs/*.sh
 *.key
 *.pem
 *.p12
